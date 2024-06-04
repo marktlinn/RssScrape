@@ -11,3 +11,8 @@ func handlerReadiness(w http.ResponseWriter, r *http.Request) {
 func handlerError(w http.ResponseWriter, r *http.Request) {
 	respondWithError(w, 500, "Internal Server Error")
 }
+
+func (s *ServerConfig) handleCreateUser(w http.ResponseWriter, r *http.Request) {
+	// access DB here
+	respondWithJson(w, 200, struct{}{})
+}

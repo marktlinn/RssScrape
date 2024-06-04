@@ -23,10 +23,5 @@ func newRouter() *ChiRouter {
 		MaxAge:           300,
 	}))
 
-	v1Router := &ChiRouter{chi.NewRouter()}
-	v1Router.Get("/healthz", handlerReadiness)
-	v1Router.Get("/error", handlerError)
-
-	router.Mount("/v1", v1Router)
 	return router
 }

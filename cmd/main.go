@@ -1,11 +1,11 @@
 package main
 
 import (
-	"database/sql"
 	"log"
 	"os"
 
 	_ "github.com/lib/pq"
+	"github.com/marktlinn/RssScrape/db"
 	"github.com/marktlinn/RssScrape/server"
 )
 
@@ -20,12 +20,11 @@ func main() {
 		log.Fatalln("failed to connect to DB: DB env variable must be set")
 	}
 
-	conn, err := sql.Open("postgres", dbUrl)
+	db, err := db.NewDBConnecton(dbUrl)
 	if err != nil {
-		log.Fatalf("failed to connect to Postgres instance: %s\n", err)
+		log.Fatalf("failed to connect to database instance: %s\n", err)
 	}
 
-	log.Printf("connected to postgres: %v\n", conn)
-
-	server.Server(port)
+	svr := server.NewServer(port, db)
+	svr.RunServer()
 }
