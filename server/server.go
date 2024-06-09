@@ -28,6 +28,7 @@ func NewServer(port string, dbCfg *db.Config) *ServerConfig {
 	v1Router.Get("/healthz", handlerReadiness)
 	v1Router.Get("/error", handlerError)
 	v1Router.Post("/users", server.handlerCreateUser)
+	v1Router.Get("/users", server.handlerGetUserByID)
 
 	router.Mount("/v1", v1Router)
 

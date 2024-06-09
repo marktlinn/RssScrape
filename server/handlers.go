@@ -8,7 +8,9 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/marktlinn/RssScrape/auth"
 	"github.com/marktlinn/RssScrape/internal/database"
+	"github.com/marktlinn/RssScrape/models"
 )
 
 func handlerReadiness(w http.ResponseWriter, r *http.Request) {
@@ -42,5 +44,21 @@ func (s *ServerConfig) handlerCreateUser(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	respondWithJson(w, 200, fmt.Sprintf("Created user %+v\n", user))
+	respondWithJson(w, 200, models.DatabaseUserToUser(user))
+}
+
+func (s *ServerConfig) handlerGetUserByID(w http.ResponseWriter, r *http.Request) {
+	apiKey, err := auth.GetAPIKey(r.Header)
+	if err != nil {
+		respondWithError(w, 401, fmt.Sprintf("unauthorized: %s\n", err))
+		return
+	}
+
+	user, err := s.DB.DB.GetUserByAPIKey(r.Context(), apiKey)
+	if err != nil {
+		respondWithError(w, 400, fmt.Sprintf("failed to find User: %s\n", err))
+		return
+	}
+
+	respondWithJson(w, 200, models.DatabaseUserToUser(user))
 }
